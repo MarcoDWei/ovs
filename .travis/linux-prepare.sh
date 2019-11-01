@@ -9,7 +9,7 @@ set -ev
 # linking against it fails.
 git clone git://git.kernel.org/pub/scm/devel/sparse/sparse.git
 cd sparse
-make -j4 HAVE_LLVM= install
+#make -j4 HAVE_LLVM= install
 cd ..
 
 pip3 install --disable-pip-version-check --user flake8 hacking
