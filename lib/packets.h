@@ -146,6 +146,14 @@ pkt_metadata_init_tnl(struct pkt_metadata *md)
 }
 
 static inline void
+pkt_metadata_init_tnl_dst(struct pkt_metadata *md)
+{
+    md->tunnel.ip_dst = 0;
+    md->tunnel.ipv6_dst = in6addr_any;
+    md->tunnel_valid = true;
+}
+
+static inline void
 pkt_metadata_init_conn(struct pkt_metadata *md)
 {
     md->conn = NULL;

@@ -6734,6 +6734,10 @@ handle_packet_upcall(struct dp_netdev_pmd_thread *pmd,
     miniflow_expand(&key->mf, &match.flow);
     memset(&match.wc, 0, sizeof match.wc);
 
+    if( !packet->md.tunnel_valid ) {
+        pkt_metadata_init_tnl_dst(&packet->md);
+    }
+
     ofpbuf_clear(actions);
     ofpbuf_clear(put_actions);
 
