@@ -6634,7 +6634,7 @@ dfc_processing(struct dp_netdev_pmd_thread *pmd,
         }
 
         if (!md_is_valid) {
-            pkt_metadata_init(&packet->md, port_no);
+            pkt_metadata_datapath_init(&packet->md, port_no);
         }
 
         if ((*recirc_depth_get() == 0) &&

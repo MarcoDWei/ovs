@@ -162,6 +162,25 @@ pkt_metadata_init_conn(struct pkt_metadata *md)
 static inline void
 pkt_metadata_init(struct pkt_metadata *md, odp_port_t port)
 {
+    /* Initialize only till ct_state. Once the ct_state is zeroed out rest
+     * of ct fields will not be looked at unless ct_state != 0.
+     */
+    memset(md, 0, offsetof(struct pkt_metadata, ct_orig_tuple_ipv6));
+
+    /* It can be expensive to zero out all of the tunnel metadata. However,
+     * we can just zero out ip_dst and the rest of the data will never be
+     * looked at. */
+    md->tunnel_valid = true;
+    md->tunnel.ip_dst = 0;
+    md->tunnel.ipv6_dst = in6addr_any;
+    
+    md->in_port.odp_port = port;
+}
+
+
+static inline void
+pkt_metadata_datapath_init(struct pkt_metadata *md, odp_port_t port)
+{
     /* This is called for every packet in userspace datapath and affects
      * performance if all the metadata is initialized. Hence, fields should
      * only be zeroed out when necessary.
@@ -172,11 +191,10 @@ pkt_metadata_init(struct pkt_metadata *md, odp_port_t port)
     memset(md, 0, offsetof(struct pkt_metadata, ct_orig_tuple_ipv6));
 
     /* It can be expensive to zero out all of the tunnel metadata. However,
-     * we can just zero out ip_dst and the rest of the data will never be
-     * looked at. */
+     * we can just clear tunnel_valid */
+    md->tunnel_valid = false;
 
     md->in_port.odp_port = port;
-    md->tunnel_valid = false;
 }
 
 /* This function prefetches the cachelines touched by pkt_metadata_init()
